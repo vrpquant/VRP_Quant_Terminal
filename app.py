@@ -9,7 +9,7 @@ import requests
 # --- GITHUB CRR VAULT CONNECTION ---
 # ==========================================
 # ⚠️ ACTION REQUIRED: Replace this URL with your raw GitHub JSON link once uploaded
-GITHUB_VAULT_URL = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/market_state.json"
+GITHUB_VAULT_URL = "https://raw.githubusercontent.com/vrpquant/VRP_Quant_Terminal/main/market_state.json"
 
 @st.cache_data(ttl=60) # Caches for 60 seconds to prevent spamming GitHub API
 def load_vault_data():
