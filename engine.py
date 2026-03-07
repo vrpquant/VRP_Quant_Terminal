@@ -80,9 +80,21 @@ class QuantLogic:
 
     @staticmethod
     def calculate_vrp_edge(ticker, df):
-        hv = QuantLogic.calculate_vol(df)
-        iv = QuantLogic.get_atm_iv(ticker, df['Close'].iloc[-1])
-        return round(iv - hv, 2) if iv else 0.0
+        # Calculate Historical Volatility
+        hv20 = df['Close'].pct_change().tail(20).std() * np.sqrt(252) * 100
+        hv60 = df['Close'].pct_change().tail(60).std() * np.sqrt(252) * 100
+        hv = df['Close'].pct_change().std() * np.sqrt(252) * 100
+        
+        # Try to get True Implied Vol (IV)
+        price = df['Close'].iloc[-1]
+        iv = QuantLogic.get_atm_iv(ticker, price)
+        
+        # If the market is closed/weekend and IV fails, fallback to HV20 - HV60
+        if iv is None or iv == 0:
+            return round(hv20 - hv60, 2)
+        
+        # Otherwise, return True VRP (IV - HV)
+        return round(iv - hv, 2)
 
     @staticmethod
     def calculate_sharpe(df, risk_free_rate=0.04):
